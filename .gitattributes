@@ -1,0 +1,2 @@
+# ICSはRFC 5545でCRLF必須。gitの改行変換を禁止し、バイト列そのまま扱う
+public/*.ics -text
