@@ -15,8 +15,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Build ICS
@@ -32,5 +32,12 @@ jobs:
             echo "No changes."
           else
             git commit -m "update forecast"
-            git push
+            # GitHub側の一時的な500エラーでpushが落ちることがあるため再試行する
+            for i in 1 2 3; do
+              git push && exit 0
+              echo "push failed (attempt $i), retrying..."
+              sleep $((i * 20))
+              git pull --rebase
+            done
+            exit 1
           fi
